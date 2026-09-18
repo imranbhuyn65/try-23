@@ -99,11 +99,12 @@
 
       .lyrics-card {
         min-height: 0;
-        max-height: 60vh;
+        max-height: none;
       }
 
       .lyrics-scroll {
         -webkit-overflow-scrolling: touch;
+        max-height: calc(100vh - 260px);
       }
 
       .transport {
@@ -128,6 +129,45 @@
         font-size: 1.18rem;
         padding: 7px 4px;
       }
+
+      .view-tabs {
+        display: flex;
+      }
+
+      .card.player,
+      .card.lyrics-card {
+        display: none;
+      }
+
+      .card.player.active-view,
+      .card.lyrics-card.active-view {
+        display: flex;
+      }
+    }
+
+    .view-tabs {
+      display: none;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--ink-dim);
+      font-family: "Cormorant Garamond", serif;
+      font-style: italic;
+      font-size: 1.02rem;
+      padding: 8px 22px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: border-color .2s ease, color .2s ease;
+    }
+
+    .tab-btn.active {
+      border-color: var(--gold);
+      color: var(--gold);
     }
 
     .card {
@@ -426,10 +466,15 @@
       </svg>
     </div>
 
+    <div class="view-tabs" id="viewTabs">
+      <button class="tab-btn active" data-view="player">Player</button>
+      <button class="tab-btn" data-view="lyrics">Lyrics</button>
+    </div>
+
     <div class="panels">
 
       <!-- Player -->
-      <div class="card player">
+      <div class="card player" id="playerCard">
         <div class="cover-frame">
           <img src="assets/cover.jpg" alt="A portrait of the two of you">
         </div>
@@ -482,7 +527,7 @@
       </div>
 
       <!-- Lyrics -->
-      <div class="card lyrics-card">
+      <div class="card lyrics-card" id="lyricsCard">
         <div class="lyrics-head">
           <span class="label">the words, as they play</span>
           <span class="hint">tap a line to jump there</span>
@@ -584,6 +629,23 @@
       }
       fetchSyncedLyrics();
 
+      // Mobile view-switcher (Player / Lyrics tabs) — no-op on desktop where CSS keeps both visible
+      const viewTabs = document.getElementById('viewTabs');
+      const playerCard = document.getElementById('playerCard');
+      const lyricsCard = document.getElementById('lyricsCard');
+      playerCard.classList.add('active-view');
+      if (viewTabs) {
+        viewTabs.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            viewTabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const view = btn.dataset.view;
+            playerCard.classList.toggle('active-view', view === 'player');
+            lyricsCard.classList.toggle('active-view', view === 'lyrics');
+          });
+        });
+      }
+
       function updateActiveLine() {
         let idx = -1;
         const t = audio.currentTime;
@@ -592,8 +654,18 @@
         }
         lines.forEach((el, i) => el.classList.toggle('active', i === idx));
         if (idx >= 0) {
-          lines[idx].scrollIntoView({ block: 'center', behavior: 'smooth' });
+          scrollLineIntoView(lines[idx]);
         }
+      }
+
+      // Scrolls ONLY the inner lyrics box (never the whole page). If the lyrics
+      // panel is hidden (e.g. mobile "Player" tab active), this safely does nothing.
+      function scrollLineIntoView(el) {
+        const cRect = lyricsScroll.getBoundingClientRect();
+        const eRect = el.getBoundingClientRect();
+        const delta = (eRect.top + eRect.height / 2) - (cRect.top + cRect.height / 2);
+        if (delta === 0) return;
+        lyricsScroll.scrollBy({ top: delta, behavior: 'smooth' });
       }
 
       playBtn.addEventListener('click', () => {
