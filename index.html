@@ -1,698 +1,564 @@
 <!DOCTYPE html>
 <html lang="bn">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Die With A Smile — Our Waltz</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap"
-    rel="stylesheet">
-  <style>
-    :root {
-      --ink: #efe4cd;
-      --ink-dim: #c9b99a;
-      --bg-0: #160c0e;
-      --bg-1: #1f1315;
-      --bg-2: #271619;
-      --line: #3a2226;
-      --gold: #c9a24c;
-      --gold-soft: #8f7638;
-      --wine: #6e2430;
-      --shadow: rgba(0, 0, 0, .45);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Die With A Smile — Our Waltz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#efe4cd;
+    --ink-dim:#c9b99a;
+    --bg-0:#160c0e;
+    --bg-1:#1f1315;
+    --bg-2:#271619;
+    --line:#3a2226;
+    --gold:#c9a24c;
+    --gold-soft:#8f7638;
+    --wine:#6e2430;
+    --shadow:rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 20% -10%, #2c1a1d 0%, transparent 55%),
+      radial-gradient(ellipse at 90% 110%, #24151a 0%, transparent 50%),
+      var(--bg-0);
+    color:var(--ink);
+    font-family:"EB Garamond", Georgia, serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:48px 20px;
+  }
 
-    * {
-      box-sizing: border-box;
-    }
+  .stage{
+    width:100%;
+    max-width:1040px;
+  }
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-    }
+  .masthead{
+    text-align:center;
+    margin-bottom:34px;
+  }
+  .masthead .kicker{
+    font-family:"Cormorant Garamond", serif;
+    font-style:italic;
+    font-size:1.05rem;
+    color:var(--gold);
+    letter-spacing:.04em;
+  }
+  .masthead h1{
+    font-family:"Cormorant Garamond", serif;
+    font-weight:500;
+    font-size:clamp(2.1rem, 4.5vw, 3.1rem);
+    margin:.15em 0 0;
+    color:var(--ink);
+  }
+  .flourish{
+    width:120px;
+    height:14px;
+    margin:14px auto 0;
+    opacity:.75;
+  }
 
-    body {
-      min-height: 100vh;
-      background:
-        radial-gradient(ellipse at 20% -10%, #2c1a1d 0%, transparent 55%),
-        radial-gradient(ellipse at 90% 110%, #24151a 0%, transparent 50%),
-        var(--bg-0);
-      color: var(--ink);
-      font-family: "EB Garamond", Georgia, serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 48px 20px;
-    }
+  .panels{
+    display:grid;
+    grid-template-columns:minmax(280px,360px) 1fr;
+    gap:28px;
+    align-items:stretch;
+  }
+  @media (max-width:760px){
+    .panels{grid-template-columns:1fr;}
+    body{padding:28px 14px;}
+    .lyrics-card{min-height:0; max-height:none;}
+    .lyrics-scroll{-webkit-overflow-scrolling:touch; max-height:calc(100vh - 260px);}
+    .transport{gap:34px;}
+    .btn-play{width:60px;height:60px;}
+    .btn-side{padding:10px;}
+    .btn-side svg{width:24px;height:24px;}
+    .lyric-line{font-size:1.18rem; padding:7px 4px;}
 
-    .stage {
-      width: 100%;
-      max-width: 1040px;
-    }
+    .view-tabs{display:flex;}
+    .card.player, .card.lyrics-card{display:none;}
+    .card.player.active-view, .card.lyrics-card.active-view{display:flex;}
+  }
 
-    .masthead {
-      text-align: center;
-      margin-bottom: 34px;
-    }
+  .view-tabs{
+    display:none;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .tab-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+    font-family:"Cormorant Garamond", serif;
+    font-style:italic;
+    font-size:1.02rem;
+    padding:8px 22px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .tab-btn.active{
+    border-color:var(--gold);
+    color:var(--gold);
+  }
 
-    .masthead .kicker {
-      font-family: "Cormorant Garamond", serif;
-      font-style: italic;
-      font-size: 1.05rem;
-      color: var(--gold);
-      letter-spacing: .04em;
-    }
+  .card{
+    background:linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    border:1px solid var(--line);
+    border-radius:6px;
+    box-shadow:0 22px 44px var(--shadow);
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    inset:9px;
+    border:1px solid rgba(201,162,76,.28);
+    border-radius:3px;
+    pointer-events:none;
+  }
 
-    .masthead h1 {
-      font-family: "Cormorant Garamond", serif;
-      font-weight: 500;
-      font-size: clamp(2.1rem, 4.5vw, 3.1rem);
-      margin: .15em 0 0;
-      color: var(--ink);
-    }
+  /* Player card */
+  .player{
+    padding:26px 26px 28px;
+    display:flex;
+    flex-direction:column;
+  }
+  .cover-frame{
+    border:1px solid rgba(201,162,76,.4);
+    padding:8px;
+    border-radius:3px;
+    background:#0f0809;
+  }
+  .cover-frame img{
+    display:block;
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    border-radius:2px;
+    filter:sepia(.18) saturate(1.05);
+  }
 
-    .flourish {
-      width: 120px;
-      height: 14px;
-      margin: 14px auto 0;
-      opacity: .75;
-    }
+  .track-meta{
+    text-align:center;
+    margin-top:20px;
+  }
+  .track-meta .title{
+    font-family:"Cormorant Garamond", serif;
+    font-size:1.65rem;
+    font-weight:600;
+  }
+  .track-meta .artists{
+    color:var(--ink-dim);
+    font-style:italic;
+    margin-top:2px;
+    font-size:1.02rem;
+  }
 
-    .panels {
-      display: grid;
-      grid-template-columns: minmax(280px, 360px) 1fr;
-      gap: 28px;
-      align-items: stretch;
-    }
+  .seek-row{
+    margin-top:22px;
+  }
+  .seek{
+    -webkit-appearance:none;
+    appearance:none;
+    width:100%;
+    height:3px;
+    border-radius:3px;
+    background:var(--line);
+    outline:none;
+    cursor:pointer;
+  }
+  .seek::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:13px;height:13px;border-radius:50%;
+    background:var(--gold);
+    border:2px solid #12090a;
+    margin-top:-5px;
+  }
+  .seek::-moz-range-thumb{
+    width:11px;height:11px;border-radius:50%;
+    background:var(--gold);border:2px solid #12090a;
+  }
+  .times{
+    display:flex;
+    justify-content:space-between;
+    font-size:.82rem;
+    color:var(--ink-dim);
+    margin-top:6px;
+    font-variant-numeric:tabular-nums;
+  }
 
-    @media (max-width:760px) {
-      .panels {
-        grid-template-columns: 1fr;
-      }
+  .transport{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:26px;
+    margin-top:18px;
+  }
+  .transport button{
+    background:none;
+    border:none;
+    color:var(--ink);
+    cursor:pointer;
+    padding:6px;
+  }
+  .transport svg{display:block;}
+  .btn-play{
+    width:54px;height:54px;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    transition:background .2s ease;
+  }
+  .btn-play:hover{background:rgba(201,162,76,.12);}
+  .btn-side svg{width:20px;height:20px;color:var(--ink-dim);}
+  .btn-side:hover svg{color:var(--gold);}
 
-      body {
-        padding: 28px 14px;
-      }
+  .volume-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:20px;
+  }
+  .volume-row svg{width:16px;height:16px;color:var(--ink-dim);flex:none;}
+  .volume{
+    -webkit-appearance:none;
+    appearance:none;
+    flex:1;
+    height:3px;
+    border-radius:3px;
+    background:var(--line);
+    outline:none;
+    cursor:pointer;
+  }
+  .volume::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:11px;height:11px;border-radius:50%;
+    background:var(--gold-soft);
+    border:2px solid #12090a;
+    margin-top:-4px;
+  }
 
-      .lyrics-card {
-        min-height: 0;
-        max-height: none;
-      }
+  .note{
+    margin-top:20px;
+    text-align:center;
+    font-size:.78rem;
+    color:var(--ink-dim);
+    font-style:italic;
+    line-height:1.5;
+  }
 
-      .lyrics-scroll {
-        -webkit-overflow-scrolling: touch;
-        max-height: calc(100vh - 260px);
-      }
+  /* Lyrics card */
+  .lyrics-card{
+    padding:26px 8px 26px 26px;
+    display:flex;
+    flex-direction:column;
+    min-height:420px;
+  }
+  .lyrics-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding-right:18px;
+    margin-bottom:6px;
+  }
+  .lyrics-head .label{
+    font-family:"Cormorant Garamond", serif;
+    font-style:italic;
+    font-size:1.15rem;
+    color:var(--gold);
+  }
+  .lyrics-head .hint{
+    font-size:.78rem;
+    color:var(--ink-dim);
+  }
+  .lyrics-rule{
+    height:1px;
+    background:linear-gradient(90deg, rgba(201,162,76,.5), transparent);
+    margin:0 18px 10px 0;
+  }
 
-      .transport {
-        gap: 34px;
-      }
+  .lyrics-scroll{
+    flex:1;
+    overflow-y:auto;
+    padding:18px 18px 18px 4px;
+    scroll-behavior:smooth;
+  }
+  .lyrics-scroll::-webkit-scrollbar{width:6px;}
+  .lyrics-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
 
-      .btn-play {
-        width: 60px;
-        height: 60px;
-      }
+  .lyric-line{
+    font-family:"Cormorant Garamond", serif;
+    font-size:1.32rem;
+    line-height:1.9;
+    color:#7a6a5e;
+    text-align:center;
+    padding:5px 4px;
+    cursor:pointer;
+    transition:color .35s ease, transform .35s ease;
+  }
+  .lyric-line:hover{color:var(--ink-dim);}
+  .lyric-line.active{
+    color:var(--ink);
+    font-weight:600;
+    transform:scale(1.045);
+  }
+  .lyric-line.tag{
+    font-style:italic;
+    color:var(--gold-soft);
+    font-size:1.05rem;
+  }
 
-      .btn-side {
-        padding: 10px;
-      }
-
-      .btn-side svg {
-        width: 24px;
-        height: 24px;
-      }
-
-      .lyric-line {
-        font-size: 1.18rem;
-        padding: 7px 4px;
-      }
-
-      .view-tabs {
-        display: flex;
-      }
-
-      .card.player,
-      .card.lyrics-card {
-        display: none;
-      }
-
-      .card.player.active-view,
-      .card.lyrics-card.active-view {
-        display: flex;
-      }
-    }
-
-    .view-tabs {
-      display: none;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .tab-btn {
-      background: transparent;
-      border: 1px solid var(--line);
-      color: var(--ink-dim);
-      font-family: "Cormorant Garamond", serif;
-      font-style: italic;
-      font-size: 1.02rem;
-      padding: 8px 22px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: border-color .2s ease, color .2s ease;
-    }
-
-    .tab-btn.active {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    .card {
-      background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      box-shadow: 0 22px 44px var(--shadow);
-      position: relative;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 9px;
-      border: 1px solid rgba(201, 162, 76, .28);
-      border-radius: 3px;
-      pointer-events: none;
-    }
-
-    /* Player card */
-    .player {
-      padding: 26px 26px 28px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .cover-frame {
-      border: 1px solid rgba(201, 162, 76, .4);
-      padding: 8px;
-      border-radius: 3px;
-      background: #0f0809;
-    }
-
-    .cover-frame img {
-      display: block;
-      width: 100%;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      border-radius: 2px;
-      filter: sepia(.18) saturate(1.05);
-    }
-
-    .track-meta {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .track-meta .title {
-      font-family: "Cormorant Garamond", serif;
-      font-size: 1.65rem;
-      font-weight: 600;
-    }
-
-    .track-meta .artists {
-      color: var(--ink-dim);
-      font-style: italic;
-      margin-top: 2px;
-      font-size: 1.02rem;
-    }
-
-    .seek-row {
-      margin-top: 22px;
-    }
-
-    .seek {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 3px;
-      border-radius: 3px;
-      background: var(--line);
-      outline: none;
-      cursor: pointer;
-    }
-
-    .seek::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      background: var(--gold);
-      border: 2px solid #12090a;
-      margin-top: -5px;
-    }
-
-    .seek::-moz-range-thumb {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: var(--gold);
-      border: 2px solid #12090a;
-    }
-
-    .times {
-      display: flex;
-      justify-content: space-between;
-      font-size: .82rem;
-      color: var(--ink-dim);
-      margin-top: 6px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .transport {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 26px;
-      margin-top: 18px;
-    }
-
-    .transport button {
-      background: none;
-      border: none;
-      color: var(--ink);
-      cursor: pointer;
-      padding: 6px;
-    }
-
-    .transport svg {
-      display: block;
-    }
-
-    .btn-play {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      border: 1px solid var(--gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s ease;
-    }
-
-    .btn-play:hover {
-      background: rgba(201, 162, 76, .12);
-    }
-
-    .btn-side svg {
-      width: 20px;
-      height: 20px;
-      color: var(--ink-dim);
-    }
-
-    .btn-side:hover svg {
-      color: var(--gold);
-    }
-
-    .volume-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .volume-row svg {
-      width: 16px;
-      height: 16px;
-      color: var(--ink-dim);
-      flex: none;
-    }
-
-    .volume {
-      -webkit-appearance: none;
-      appearance: none;
-      flex: 1;
-      height: 3px;
-      border-radius: 3px;
-      background: var(--line);
-      outline: none;
-      cursor: pointer;
-    }
-
-    .volume::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: var(--gold-soft);
-      border: 2px solid #12090a;
-      margin-top: -4px;
-    }
-
-    .note {
-      margin-top: 20px;
-      text-align: center;
-      font-size: .78rem;
-      color: var(--ink-dim);
-      font-style: italic;
-      line-height: 1.5;
-    }
-
-    /* Lyrics card */
-    .lyrics-card {
-      padding: 26px 8px 26px 26px;
-      display: flex;
-      flex-direction: column;
-      min-height: 420px;
-    }
-
-    .lyrics-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      padding-right: 18px;
-      margin-bottom: 6px;
-    }
-
-    .lyrics-head .label {
-      font-family: "Cormorant Garamond", serif;
-      font-style: italic;
-      font-size: 1.15rem;
-      color: var(--gold);
-    }
-
-    .lyrics-head .hint {
-      font-size: .78rem;
-      color: var(--ink-dim);
-    }
-
-    .lyrics-rule {
-      height: 1px;
-      background: linear-gradient(90deg, rgba(201, 162, 76, .5), transparent);
-      margin: 0 18px 10px 0;
-    }
-
-    .lyrics-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px 18px 18px 4px;
-      scroll-behavior: smooth;
-    }
-
-    .lyrics-scroll::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .lyrics-scroll::-webkit-scrollbar-thumb {
-      background: var(--line);
-      border-radius: 3px;
-    }
-
-    .lyric-line {
-      font-family: "Cormorant Garamond", serif;
-      font-size: 1.32rem;
-      line-height: 1.9;
-      color: #7a6a5e;
-      text-align: center;
-      padding: 5px 4px;
-      cursor: pointer;
-      transition: color .35s ease, transform .35s ease;
-    }
-
-    .lyric-line:hover {
-      color: var(--ink-dim);
-    }
-
-    .lyric-line.active {
-      color: var(--ink);
-      font-weight: 600;
-      transform: scale(1.045);
-    }
-
-    .lyric-line.tag {
-      font-style: italic;
-      color: var(--gold-soft);
-      font-size: 1.05rem;
-    }
-
-    .placeholder-banner {
-      margin: 0 18px 14px 0;
-      padding: 10px 14px;
-      border: 1px dashed rgba(201, 162, 76, .45);
-      border-radius: 4px;
-      font-size: .8rem;
-      color: var(--ink-dim);
-      line-height: 1.55;
-    }
-
-    .placeholder-banner strong {
-      color: var(--gold);
-    }
-  </style>
+  .placeholder-banner{
+    margin:0 18px 14px 0;
+    padding:10px 14px;
+    border:1px dashed rgba(201,162,76,.45);
+    border-radius:4px;
+    font-size:.8rem;
+    color:var(--ink-dim);
+    line-height:1.55;
+  }
+  .placeholder-banner strong{color:var(--gold);}
+</style>
 </head>
-
 <body>
 
-  <div class="stage">
+<div class="stage">
 
-    <div class="masthead">
-      <div class="kicker">a little archive of us</div>
-      <h1>Wherever You Go, That's Where I'll Follow</h1>
-      <svg class="flourish" viewBox="0 0 120 14" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 7 H45 M75 7 H120" stroke="#c9a24c" stroke-width="1" />
-        <circle cx="60" cy="7" r="4" fill="none" stroke="#c9a24c" stroke-width="1" />
-        <path d="M52 7 L45 7 M75 7 L68 7" stroke="#c9a24c" stroke-width="1" />
-      </svg>
-    </div>
-
-    <div class="view-tabs" id="viewTabs">
-      <button class="tab-btn active" data-view="player">Player</button>
-      <button class="tab-btn" data-view="lyrics">Lyrics</button>
-    </div>
-
-    <div class="panels">
-
-      <!-- Player -->
-      <div class="card player" id="playerCard">
-        <div class="cover-frame">
-          <img src="assets/cover.jpg" alt="A portrait of the two of you">
-        </div>
-
-        <div class="track-meta">
-          <div class="title" id="trackTitle">Die With A Smile</div>
-          <div class="artists" id="trackArtists">Lady Gaga · Bruno Mars</div>
-        </div>
-
-        <div class="seek-row">
-          <input type="range" class="seek" id="seek" min="0" max="100" value="0" step="0.1">
-          <div class="times">
-            <span id="curTime">0:00</span>
-            <span id="durTime">0:00</span>
-          </div>
-        </div>
-
-        <div class="transport">
-          <button class="btn-side" id="prevBtn" title="Restart line" aria-label="Restart">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 6h2v12H6zM20 18L10 12l10-6z" />
-            </svg>
-          </button>
-          <button class="btn-play" id="playBtn" aria-label="Play">
-            <svg id="playIcon" viewBox="0 0 24 24" width="20" height="20" fill="#efe4cd">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-            <svg id="pauseIcon" viewBox="0 0 24 24" width="20" height="20" fill="#efe4cd" style="display:none">
-              <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
-            </svg>
-          </button>
-          <button class="btn-side" id="nextBtn" title="Skip 10s" aria-label="Forward">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M16 6h2v12h-2zM4 18l10-6L4 6z" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="volume-row">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 10v4h4l5 5V5L7 10H3z" />
-          </svg>
-          <input type="range" class="volume" id="volume" min="0" max="1" step="0.01" value="0.85">
-        </div>
-
-        <audio id="audio" src="assets/song.mp3" preload="metadata"></audio>
-
-        <div class="note">Add your own copy of the song at <strong style="color:var(--gold)">assets/song.mp3</strong> —
-          see the README for details.</div>
-      </div>
-
-      <!-- Lyrics -->
-      <div class="card lyrics-card" id="lyricsCard">
-        <div class="lyrics-head">
-          <span class="label">the words, as they play</span>
-          <span class="hint">tap a line to jump there</span>
-        </div>
-        <div class="lyrics-rule"></div>
-
-        <div class="placeholder-banner" id="statusBanner">
-          Looking for synced lyrics…
-        </div>
-
-        <div class="lyrics-scroll" id="lyricsScroll"></div>
-      </div>
-
-    </div>
+  <div class="masthead">
+    <div class="kicker">a little archive of us</div>
+    <h1>Wherever You Go, That's Where I'll Follow</h1>
+    <svg class="flourish" viewBox="0 0 120 14" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 7 H45 M75 7 H120" stroke="#c9a24c" stroke-width="1"/>
+      <circle cx="60" cy="7" r="4" fill="none" stroke="#c9a24c" stroke-width="1"/>
+      <path d="M52 7 L45 7 M75 7 L68 7" stroke="#c9a24c" stroke-width="1"/>
+    </svg>
   </div>
 
-  <script src="lyrics.js"></script>
-  <script>
-    (function () {
-      const audio = document.getElementById('audio');
-      const playBtn = document.getElementById('playBtn');
-      const playIcon = document.getElementById('playIcon');
-      const pauseIcon = document.getElementById('pauseIcon');
-      const seek = document.getElementById('seek');
-      const volume = document.getElementById('volume');
-      const curTime = document.getElementById('curTime');
-      const durTime = document.getElementById('durTime');
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      const lyricsScroll = document.getElementById('lyricsScroll');
-      const statusBanner = document.getElementById('statusBanner');
+  <div class="view-tabs" id="viewTabs">
+    <button class="tab-btn active" data-view="player">Player</button>
+    <button class="tab-btn" data-view="lyrics">Lyrics</button>
+  </div>
 
-      const TRACK_NAME = "Die With A Smile";
-      const ARTIST_NAME = "Lady Gaga";
+  <div class="panels">
 
-      function fmt(s) {
-        if (!isFinite(s)) return '0:00';
-        const m = Math.floor(s / 60);
-        const sec = Math.floor(s % 60).toString().padStart(2, '0');
-        return `${m}:${sec}`;
-      }
+    <!-- Player -->
+    <div class="card player" id="playerCard">
+      <div class="cover-frame">
+        <img src="assets/cover.jpg" alt="A portrait of the two of you">
+      </div>
 
-      let lines = [];
+      <div class="track-meta">
+        <div class="title" id="trackTitle">Die With A Smile</div>
+        <div class="artists" id="trackArtists">Lady Gaga · Bruno Mars</div>
+      </div>
 
-      function renderLines(data) {
-        lyricsScroll.innerHTML = '';
-        lines = data.map((l) => {
-          const el = document.createElement('div');
-          el.className = 'lyric-line' + (l.tag ? ' tag' : '');
-          el.textContent = l.text;
-          el.dataset.time = l.time;
-          el.addEventListener('click', () => {
-            audio.currentTime = l.time;
-            audio.play();
-          });
-          lyricsScroll.appendChild(el);
-          return el;
-        });
-      }
+      <div class="seek-row">
+        <input type="range" class="seek" id="seek" min="0" max="100" value="0" step="0.1">
+        <div class="times">
+          <span id="curTime">0:00</span>
+          <span id="durTime">0:00</span>
+        </div>
+      </div>
 
-      // --- Parse standard .lrc synced-lyrics text into [{time, text}] ---
-      function parseLRC(lrcText) {
-        const out = [];
-        const timeTag = /\[(\d{2}):(\d{2})(?:\.(\d{1,2}))?\]/g;
-        lrcText.split('\n').forEach(line => {
-          const tags = [...line.matchAll(timeTag)];
-          if (!tags.length) return;
-          const text = line.replace(timeTag, '').trim();
-          if (!text) return;
-          tags.forEach(t => {
-            const min = parseInt(t[1], 10);
-            const sec = parseInt(t[2], 10);
-            const cs = t[3] ? parseInt(t[3].padEnd(2, '0'), 10) : 0;
-            out.push({ time: min * 60 + sec + cs / 100, text });
-          });
-        });
-        out.sort((a, b) => a.time - b.time);
-        return out;
-      }
+      <div class="transport">
+        <button class="btn-side" id="prevBtn" title="Restart line" aria-label="Restart">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM20 18L10 12l10-6z"/></svg>
+        </button>
+        <button class="btn-play" id="playBtn" aria-label="Play">
+          <svg id="playIcon" viewBox="0 0 24 24" width="20" height="20" fill="#efe4cd"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="pauseIcon" viewBox="0 0 24 24" width="20" height="20" fill="#efe4cd" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+        </button>
+        <button class="btn-side" id="nextBtn" title="Skip 10s" aria-label="Forward">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM4 18l10-6L4 6z"/></svg>
+        </button>
+      </div>
 
-      // --- Try to fetch synced lyrics live from a public lyrics database ---
-      async function fetchSyncedLyrics() {
-        try {
-          const url = `https://lrclib.net/api/search?track_name=${encodeURIComponent(TRACK_NAME)}&artist_name=${encodeURIComponent(ARTIST_NAME)}`;
-          const res = await fetch(url);
-          if (!res.ok) throw new Error('lookup failed');
-          const results = await res.json();
-          const withSync = results.find(r => r.syncedLyrics);
-          if (!withSync) throw new Error('no synced result');
-          const parsed = parseLRC(withSync.syncedLyrics);
-          if (!parsed.length) throw new Error('empty parse');
-          renderLines(parsed);
-          statusBanner.style.display = 'none';
-        } catch (err) {
-          // Fall back to whatever is defined in lyrics.js (placeholders or your own manual lines)
-          renderLines(window.LYRICS || []);
-          statusBanner.textContent = "Couldn't fetch synced lyrics automatically — edit lyrics.js to add them manually (see README).";
-        }
-      }
-      fetchSyncedLyrics();
+      <div class="volume-row">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4h4l5 5V5L7 10H3z"/></svg>
+        <input type="range" class="volume" id="volume" min="0" max="1" step="0.01" value="0.85">
+      </div>
 
-      // Mobile view-switcher (Player / Lyrics tabs) — no-op on desktop where CSS keeps both visible
-      const viewTabs = document.getElementById('viewTabs');
-      const playerCard = document.getElementById('playerCard');
-      const lyricsCard = document.getElementById('lyricsCard');
-      playerCard.classList.add('active-view');
-      if (viewTabs) {
-        viewTabs.querySelectorAll('.tab-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            viewTabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const view = btn.dataset.view;
-            playerCard.classList.toggle('active-view', view === 'player');
-            lyricsCard.classList.toggle('active-view', view === 'lyrics');
-          });
-        });
-      }
+      <audio id="audio" src="assets/song.mp3" preload="metadata"></audio>
 
-      function updateActiveLine() {
-        let idx = -1;
-        const t = audio.currentTime;
-        for (let i = 0; i < lines.length; i++) {
-          if (t >= parseFloat(lines[i].dataset.time)) idx = i;
-        }
-        lines.forEach((el, i) => el.classList.toggle('active', i === idx));
-        if (idx >= 0) {
-          scrollLineIntoView(lines[idx]);
-        }
-      }
+      <div class="note">Add your own copy of the song at <strong style="color:var(--gold)">assets/song.mp3</strong> — see the README for details.</div>
+    </div>
 
-      // Scrolls ONLY the inner lyrics box (never the whole page). If the lyrics
-      // panel is hidden (e.g. mobile "Player" tab active), this safely does nothing.
-      function scrollLineIntoView(el) {
-        const cRect = lyricsScroll.getBoundingClientRect();
-        const eRect = el.getBoundingClientRect();
-        const delta = (eRect.top + eRect.height / 2) - (cRect.top + cRect.height / 2);
-        if (delta === 0) return;
-        lyricsScroll.scrollBy({ top: delta, behavior: 'smooth' });
-      }
+    <!-- Lyrics -->
+    <div class="card lyrics-card" id="lyricsCard">
+      <div class="lyrics-head">
+        <span class="label">the words, as they play</span>
+        <span class="hint">tap a line to jump there</span>
+      </div>
+      <div class="lyrics-rule"></div>
 
-      playBtn.addEventListener('click', () => {
-        if (audio.paused) { audio.play(); } else { audio.pause(); }
+      <div class="placeholder-banner" id="statusBanner">
+        Looking for synced lyrics…
+      </div>
+
+      <div class="lyrics-scroll" id="lyricsScroll"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="lyrics.js"></script>
+<script>
+(function(){
+  const audio = document.getElementById('audio');
+  const playBtn = document.getElementById('playBtn');
+  const playIcon = document.getElementById('playIcon');
+  const pauseIcon = document.getElementById('pauseIcon');
+  const seek = document.getElementById('seek');
+  const volume = document.getElementById('volume');
+  const curTime = document.getElementById('curTime');
+  const durTime = document.getElementById('durTime');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const lyricsScroll = document.getElementById('lyricsScroll');
+  const statusBanner = document.getElementById('statusBanner');
+
+  const TRACK_NAME = "Die With A Smile";
+  const ARTIST_NAME = "Lady Gaga";
+
+  function fmt(s){
+    if(!isFinite(s)) return '0:00';
+    const m = Math.floor(s/60);
+    const sec = Math.floor(s%60).toString().padStart(2,'0');
+    return `${m}:${sec}`;
+  }
+
+  let lines = [];
+
+  function renderLines(data){
+    lyricsScroll.innerHTML = '';
+    lines = data.map((l) => {
+      const el = document.createElement('div');
+      el.className = 'lyric-line' + (l.tag ? ' tag' : '');
+      el.textContent = l.text;
+      el.dataset.time = l.time;
+      el.addEventListener('click', () => {
+        audio.currentTime = l.time;
+        audio.play();
       });
-      audio.addEventListener('play', () => { playIcon.style.display = 'none'; pauseIcon.style.display = 'block'; });
-      audio.addEventListener('pause', () => { playIcon.style.display = 'block'; pauseIcon.style.display = 'none'; });
+      lyricsScroll.appendChild(el);
+      return el;
+    });
+  }
 
-      audio.addEventListener('loadedmetadata', () => {
-        seek.max = audio.duration || 0;
-        durTime.textContent = fmt(audio.duration);
+  // --- Parse standard .lrc synced-lyrics text into [{time, text}] ---
+  function parseLRC(lrcText){
+    const out = [];
+    const timeTag = /\[(\d{2}):(\d{2})(?:\.(\d{1,2}))?\]/g;
+    lrcText.split('\n').forEach(line => {
+      const tags = [...line.matchAll(timeTag)];
+      if(!tags.length) return;
+      const text = line.replace(timeTag, '').trim();
+      if(!text) return;
+      tags.forEach(t => {
+        const min = parseInt(t[1], 10);
+        const sec = parseInt(t[2], 10);
+        const cs = t[3] ? parseInt(t[3].padEnd(2,'0'), 10) : 0;
+        out.push({ time: min*60 + sec + cs/100, text });
       });
-      audio.addEventListener('timeupdate', () => {
-        seek.value = audio.currentTime;
-        curTime.textContent = fmt(audio.currentTime);
-        updateActiveLine();
+    });
+    out.sort((a,b) => a.time - b.time);
+    return out;
+  }
+
+  // --- Try to fetch synced lyrics live from a public lyrics database ---
+  async function fetchSyncedLyrics(){
+    try{
+      const url = `https://lrclib.net/api/search?track_name=${encodeURIComponent(TRACK_NAME)}&artist_name=${encodeURIComponent(ARTIST_NAME)}`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('lookup failed');
+      const results = await res.json();
+      const withSync = results.find(r => r.syncedLyrics);
+      if(!withSync) throw new Error('no synced result');
+      const parsed = parseLRC(withSync.syncedLyrics);
+      if(!parsed.length) throw new Error('empty parse');
+      renderLines(parsed);
+      statusBanner.style.display = 'none';
+    }catch(err){
+      // Fall back to whatever is defined in lyrics.js (placeholders or your own manual lines)
+      renderLines(window.LYRICS || []);
+      statusBanner.textContent = "Couldn't fetch synced lyrics automatically — edit lyrics.js to add them manually (see README).";
+    }
+  }
+  fetchSyncedLyrics();
+
+  // Mobile view-switcher (Player / Lyrics tabs) — no-op on desktop where CSS keeps both visible
+  const viewTabs = document.getElementById('viewTabs');
+  const playerCard = document.getElementById('playerCard');
+  const lyricsCard = document.getElementById('lyricsCard');
+  playerCard.classList.add('active-view');
+  if(viewTabs){
+    viewTabs.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        viewTabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const view = btn.dataset.view;
+        playerCard.classList.toggle('active-view', view === 'player');
+        lyricsCard.classList.toggle('active-view', view === 'lyrics');
       });
-      seek.addEventListener('input', () => { audio.currentTime = seek.value; });
+    });
+  }
 
-      volume.addEventListener('input', () => { audio.volume = volume.value; });
-      audio.volume = volume.value;
+  function updateActiveLine(){
+    let idx = -1;
+    const t = audio.currentTime;
+    for(let i=0;i<lines.length;i++){
+      if(t >= parseFloat(lines[i].dataset.time)) idx = i;
+    }
+    lines.forEach((el, i) => el.classList.toggle('active', i === idx));
+    if(idx >= 0){
+      scrollLineIntoView(lines[idx]);
+    }
+  }
 
-      prevBtn.addEventListener('click', () => { audio.currentTime = Math.max(0, audio.currentTime - 5); });
-      nextBtn.addEventListener('click', () => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10); });
-    })();
-  </script>
+  // Scrolls ONLY the inner lyrics box (never the whole page). If the lyrics
+  // panel is hidden (e.g. mobile "Player" tab active), this safely does nothing.
+  function scrollLineIntoView(el){
+    const cRect = lyricsScroll.getBoundingClientRect();
+    const eRect = el.getBoundingClientRect();
+    const delta = (eRect.top + eRect.height/2) - (cRect.top + cRect.height/2);
+    if(delta === 0) return;
+    lyricsScroll.scrollBy({ top: delta, behavior: 'smooth' });
+  }
+
+  playBtn.addEventListener('click', () => {
+    if(audio.paused){ audio.play(); } else { audio.pause(); }
+  });
+  audio.addEventListener('play', () => { playIcon.style.display='none'; pauseIcon.style.display='block'; });
+  audio.addEventListener('pause', () => { playIcon.style.display='block'; pauseIcon.style.display='none'; });
+
+  audio.addEventListener('loadedmetadata', () => {
+    seek.max = audio.duration || 0;
+    durTime.textContent = fmt(audio.duration);
+  });
+  audio.addEventListener('timeupdate', () => {
+    seek.value = audio.currentTime;
+    curTime.textContent = fmt(audio.currentTime);
+    updateActiveLine();
+  });
+  seek.addEventListener('input', () => { audio.currentTime = seek.value; });
+
+  volume.addEventListener('input', () => { audio.volume = volume.value; });
+  audio.volume = volume.value;
+
+  prevBtn.addEventListener('click', () => { audio.currentTime = Math.max(0, audio.currentTime - 5); });
+  nextBtn.addEventListener('click', () => { audio.currentTime = Math.min(audio.duration||0, audio.currentTime + 10); });
+})();
+</script>
 
 </body>
-
 </html>
